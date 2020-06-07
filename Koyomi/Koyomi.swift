@@ -240,13 +240,19 @@ final public class Koyomi: UICollectionView {
     public var dayPosition: ContentPosition  = .center
     public var weekPosition: ContentPosition = .center
     
+    public var locale: Locale = Locale.current {
+        didSet{
+            model.locale = locale
+        }
+    }
+
     // Week cell text
     public var weeks: (String, String, String, String, String, String, String) {
         get {
             return model.weeks
         }
         set {
-            model.weeks = newValue
+            model.customWeeks = newValue
             reloadData()
         }
     }
