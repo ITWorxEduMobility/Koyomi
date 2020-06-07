@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Stellar
 
 // MARK: - KoyomiDelegate -
 @objc public protocol KoyomiDelegate: class {
@@ -199,6 +200,13 @@ final public class Koyomi: UICollectionView {
         public var widthRate: CGFloat = 1
         public var position: Position = .center
     }
+    
+    public var locale: Locale = Locale.current {
+        didSet{
+            model.locale = locale
+        }
+    }
+    
     public var lineView: LineView = .init()
     
     @IBInspectable public var isHiddenOtherMonth: Bool = false
@@ -246,7 +254,7 @@ final public class Koyomi: UICollectionView {
             return model.weeks
         }
         set {
-            model.weeks = newValue
+            model.customWeeks = newValue
             reloadData()
         }
     }
@@ -317,8 +325,11 @@ final public class Koyomi: UICollectionView {
     
     public func display(in month: MonthType) {
         model.display(in: month)
-        reloadData()
-        calendarDelegate?.koyomi?(self, currentDateString: model.dateString(in: .current, withFormat: currentDateFormat))
+//        reloadData()
+//        calendarDelegate?.koyomi?(self, currentDateString: self.model.dateString(in: .current, withFormat: self.currentDateFormat))
+        reloadKoyomiDataAnimated {
+            self.calendarDelegate?.koyomi?(self, currentDateString: self.model.dateString(in: .current, withFormat: self.currentDateFormat))
+        }
     }
     
     @discardableResult
@@ -386,6 +397,18 @@ final public class Koyomi: UICollectionView {
     override public func reloadData() {
         super.reloadData()
         setCollectionViewLayout(layout, animated: false)
+    }
+    
+    func reloadKoyomiDataAnimated(withCompletion completion: CollectionViewAnimationClosure?) {
+        self.makeAlpha(0.0).duration(0.4).easing(.linear).completion {
+            self.reloadData()
+            self.setCollectionViewLayout(self.layout, animated: false)
+            }.then().makeAlpha(1.0).duration(0.4).easing(.exponentialOut).completion {
+                self.setCollectionViewLayout(self.layout, animated: false)
+                if completion != nil {
+                    completion!()
+                }
+            }.animate()
     }
     
     override public func layoutSubviews() {

@@ -15,9 +15,24 @@ final class DateModel: NSObject {
     // Type properties
     static let dayCountPerRow = 7
     static let maxCellCount   = 42
+    var locale = Locale.current
     
     // Week text
-    var weeks: (String, String, String, String, String, String, String) = ("SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT")
+    var weeks: (String, String, String, String, String, String, String) {
+        if let customWeeks = customWeeks {
+            return customWeeks
+        }
+        
+        if locale.identifier.contains("ar"){
+            return ("أحد", "إثنين","ثلاثاء", "أربعاء", "خميس", "جمعة", "سبت")
+        } else if locale.identifier.contains("es"){
+            return ("DO", "LU", "MA", "MI", "JU", "VI", "SA")
+        } else {
+            return ("SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT")
+        }
+    }
+    
+    var customWeeks:(String, String, String, String, String, String, String)?
     
     enum WeekType: String {
         case monday, tuesday, wednesday, thursday, friday, saturday, sunday
@@ -86,6 +101,7 @@ final class DateModel: NSObject {
             return ""
         }
         let formatter: DateFormatter = .init()
+        formatter.locale = locale
         formatter.dateFormat = "d"
         return formatter.string(from: currentDates[indexPath.row])
     }
@@ -106,6 +122,7 @@ final class DateModel: NSObject {
     
     func dateString(in month: MonthType, withFormat format: String) -> String {
         let formatter: DateFormatter = .init()
+        formatter.locale = locale
         formatter.dateFormat = format
         return formatter.string(from: date(of: month))
     }
@@ -315,7 +332,7 @@ private extension DateModel {
         guard let indexAtBeginning = indexAtBeginning(in: .current) else { return }
 
         var components: DateComponents = .init()
-        currentDates = (0..<DateModel.maxCellCount).flatMap { index in
+        currentDates = (0..<DateModel.maxCellCount).compactMap { index in
                 components.day = index - indexAtBeginning
                 return calendar.date(byAdding: components, to: atBeginning(of: .current))
             }
