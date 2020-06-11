@@ -81,6 +81,7 @@ final class KoyomiCell: UICollectionViewCell {
     }
     
     func configureAppearanse(of style: CellStyle, withColor color: UIColor, backgroundColor: UIColor, isSelected: Bool) {
+        self.isSelected = isSelected
         switch style {
         case .standard:
             self.backgroundColor = isSelected ? color : backgroundColor
