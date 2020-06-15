@@ -345,6 +345,7 @@ final public class Koyomi: UICollectionView {
     
     @discardableResult
     public func select(date: Date, to toDate: Date? = nil) -> Self {
+        model.display(monthOfDate: date)
         model.select(from: date, to: toDate)
         return self
     }

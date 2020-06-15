@@ -319,6 +319,12 @@ final class DateModel: NSObject {
         default: return ""
         }
     }
+    
+    func display(monthOfDate date: Date){
+        currentDate = date
+        setup()
+    }
+
 }
 
 // MARK: - Private Methods -
