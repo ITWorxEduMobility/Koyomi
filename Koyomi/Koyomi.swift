@@ -343,6 +343,11 @@ final public class Koyomi: UICollectionView {
         return model.dateString(in: .current, withFormat: format)
     }
     
+    public func selectAndNavigateTo(date: Date){
+        model.displayMonthOf(date: date)
+        select(date: date)
+    }
+    
     @discardableResult
     public func select(date: Date, to toDate: Date? = nil) -> Self {
         model.select(from: date, to: toDate)
