@@ -308,7 +308,12 @@ final class DateModel: NSObject {
     }
     
     func week(at index: Int) -> String {
-        switch index {
+        let firstIndex = calendar.firstWeekday - 1
+        var updatedIndex = firstIndex + index
+        if updatedIndex > 6 {
+            updatedIndex = updatedIndex - calendar.firstWeekday
+        }
+        switch updatedIndex {
         case 0:  return weeks.0
         case 1:  return weeks.1
         case 2:  return weeks.2
